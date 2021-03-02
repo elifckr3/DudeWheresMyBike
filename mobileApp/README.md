@@ -9,4 +9,4 @@
     Open to change, but followed this [one](https://colorhunt.co/palette/226680)
 ## Screens
     Login Screen
-    <img src="screenshots/login.png">
+    <![Login Screen](screenshots/login.png)
