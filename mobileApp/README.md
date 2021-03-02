@@ -6,8 +6,7 @@
 ## Special Environment Configurations
 * disabled flipper in ios/Podfile -- Maegan doesn't update macOS and can't run the iOS emmulator :')
 ## Color Palate 
-    Open to change, but followed this [one](https://colorhunt.co/palette/226680)
+   Open to change, but followed this [one](https://colorhunt.co/palette/226680)
 ## Screens
-    Login Screen
-    
+   Login Screen
    <![Login Screen](screenshots/login.png)
