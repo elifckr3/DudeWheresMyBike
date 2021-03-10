@@ -1,12 +1,8 @@
-import React, { Component } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
-
-import LoginScreen from './Login';
+import React from 'react';
+import ScreensNavigator from './ScreensNavigator';
 
 export default class App extends React.Component {
-  render(){
-    return (
-      < LoginScreen />
-    );
+  render() {
+    return <ScreensNavigator />;
   }
 }
