@@ -7,7 +7,7 @@ import HomeScreen from './Home';
 
 const {Navigator, Screen} = createStackNavigator();
 
-const AuthStack = () => (
+const NavStack = () => (
   <Navigator headerMode="none">
     <Screen name="Login" component={LoginScreen} />
     <Screen name="Home" component={HomeScreen} />
@@ -16,7 +16,7 @@ const AuthStack = () => (
 
 const ScreensNavigator = () => (
   <NavigationContainer>
-    <AuthStack />
+    <NavStack />
   </NavigationContainer>
 );
 
