@@ -9,4 +9,5 @@
    Open to change, but followed this [one](https://colorhunt.co/palette/226680)
 ## Screens
    Login Screen
+   <br/>
    <img src="screenshots/login.png" alt="login" width="200"/>
