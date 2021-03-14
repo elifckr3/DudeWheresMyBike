@@ -11,3 +11,9 @@
    Login Screen
    <br/>
    <img src="screenshots/login.png" alt="login" width="200"/>
+   Map Home Screen
+   <br/>
+   <img src="screenshots/map.png" alt="login" width="200"/>
+   Bike Status (Get here by pressing on pin)
+   <br/>
+   <img src="screenshots/status.png" alt="login" width="200"/>
