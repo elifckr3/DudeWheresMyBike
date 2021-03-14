@@ -1,7 +1,6 @@
 import React from 'react';  
 import { StyleSheet, Text, View, TouchableOpacity, Switch} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
-import { isEnabled } from 'react-native/Libraries/Performance/Systrace';
 
 export default class HomeScreen extends React.Component {
   constructor(props) {
@@ -9,6 +8,9 @@ export default class HomeScreen extends React.Component {
     this.state = { 
       showStatus: false,
       isEnabled: false,
+      address: null,
+      latitude: 37.78825,
+      longitude: -122.4324,
     };
   }
 
@@ -28,8 +30,8 @@ export default class HomeScreen extends React.Component {
         <MapView
           style={{flex: 1}}
           initialRegion={{
-            latitude: 37.78825,
-            longitude: -122.4324,
+            latitude: this.state.latitude,
+            longitude: this.state.longitude,
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}
@@ -37,7 +39,7 @@ export default class HomeScreen extends React.Component {
           >
           
             <Marker
-            coordinate={{latitude: 37.78825, longitude: -122.4324}}
+            coordinate={{latitude: this.state.latitude, longitude: this.state.longitude}}
             // title="Bike"
             // description="Your bike is located here" 
             onPress={(e) => {e.stopPropagation(); this.changeState()}

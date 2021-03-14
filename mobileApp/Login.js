@@ -1,7 +1,7 @@
-import React, { Component } from 'react';;
+import React from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 
-export default class LoginScreen extends Component {
+export default class LoginScreen extends React.Component {
   state={
     email:"",
     password:""
@@ -31,7 +31,7 @@ export default class LoginScreen extends Component {
             <Text style={styles.loginText}>LOGIN</Text>
         </TouchableOpacity>
         <TouchableOpacity>
-            <Text style={styles.loginText}>Signup</Text>
+            <Text style={styles.loginText} onPress={() => this.props.navigation.navigate('SignUp')}>Signup</Text>
         </TouchableOpacity>
     </View>
     );
