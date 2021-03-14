@@ -1,39 +1,39 @@
-import React, { Component } from 'react';;
+import React from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 
-export default class LoginScreen extends Component {
+export default class LoginScreen extends React.Component {
   state={
     email:"",
     password:""
   }
   render(){
     return (
-      <View style={styles.container}>
+    <View style={styles.container}>
         <Text style={styles.logo}>Dude, Where's My Bike?</Text>
         <View style={styles.inputView} >
-          <TextInput  
+        <TextInput  
             style={styles.inputText}
             placeholder="Email..." 
             placeholderTextColor="#456268"
             onChangeText={text => this.setState({email:text})}/>
         </View>
         <View style={styles.inputView} >
-          <TextInput secureTextEntry 
+        <TextInput secureTextEntry 
             style={styles.inputText}
             placeholder="Password..." 
             placeholderTextColor="#456268"
             onChangeText={text => this.setState({password:text})}/>
         </View>
         <TouchableOpacity>
-          <Text style={styles.forgot}>Forgot Password?</Text>
+            <Text style={styles.forgot}>Forgot Password?</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.loginBtn}>
-          <Text style={styles.loginText}>LOGIN</Text>
+        <TouchableOpacity style={styles.loginBtn} onPress={() => this.props.navigation.navigate('Home')}>
+            <Text style={styles.loginText}>LOGIN</Text>
         </TouchableOpacity>
         <TouchableOpacity>
-          <Text style={styles.loginText}>Signup</Text>
+            <Text style={styles.loginText} onPress={() => this.props.navigation.navigate('SignUp')}>Signup</Text>
         </TouchableOpacity>
-      </View>
+    </View>
     );
   }
 }
