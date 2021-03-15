@@ -9,7 +9,7 @@
   double avglat;
   double avglong;
 
-SoftwareSerial serial_connection(10, 11); // RX = pin 10, TX = pin 11
+SoftwareSerial serial_connection(10, 11); // RX = pin 11, TX = pin 10
 TinyGPSPlus gps;
 void setup() {
   // put your setup code here, to run once:
