@@ -4,29 +4,25 @@
   int counter = 1;
   double firstlat;
   double firstlong;
-  double latitude;
-  double longitude;
+  double latitude,GLOBAL_LAT;
+  double longitude,GLOBAL_LON;
   double avglat;
   double avglong;
 
 SoftwareSerial serial_connection(10, 11); // RX = pin 11, TX = pin 10
 TinyGPSPlus gps;
-void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(9600);
-  serial_connection.begin(9600);
-  Serial.print("GPS Start");
 
 
-}
 
-void loop() {
-  // put your main code here, to run repeatedly:
+
+void gps_feed_check()
+{
   while (serial_connection.available()){
     gps.encode(serial_connection.read());
   }
-  
-  if (gps.location.isUpdated()){
+
+
+if (gps.location.isUpdated() && gps.location.isValid()){
     latitude = gps.location.lat();
     longitude = gps.location.lng();
 
@@ -63,4 +59,31 @@ void loop() {
     counter ++;
     
   }
+
+
+GLOBAL_LAT = avglat;
+GLOBAL_LON = avglon;
+
+}
+
+
+
+
+
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  serial_connection.begin(9600);
+  Serial.print("GPS Start");
+
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+ gps_feed_check();  
+  
+
 }
