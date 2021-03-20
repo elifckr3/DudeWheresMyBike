@@ -172,6 +172,7 @@ void loop() {
   //Serial.println(gps_feed_check());
 
    switch (state) {
+    Serial.print(state);
       case 0: //init state
       Serial.println("init state");
       delay(200);
@@ -212,8 +213,8 @@ void loop() {
         }
         
       case 3: //send signal state
-      Serial.println("send_signal state");
-      delay(200);
+      Serial.print("send_signal state");
+      delay(2000);
         //return gps data to backend to track the bike (send to particle cloud)
         if (bs) {
           Serial.println("bike stolen");
@@ -222,10 +223,12 @@ void loop() {
         }
         else {
           Serial.println("wheel stolen");
+          state =4;
           delay(200);
+          break;
         }
-        state =4;
-        break;
+        
+        
         
       case 4: //sound alarm state 
       Serial.println("sound_alarm state");
@@ -236,7 +239,9 @@ void loop() {
           break;
         }
         else {
-          sound_alarm();
+          for (int i=0; i<10;i++) {
+            sound_alarm();
+          }
           ack = 1;
           break;
         }
