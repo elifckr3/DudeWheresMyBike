@@ -13,6 +13,13 @@ export default class LoginScreen extends React.Component {
         <View style={styles.inputView} >
         <TextInput  
             style={styles.inputText}
+            placeholder="Device ID..." 
+            placeholderTextColor="#456268"
+            onChangeText={text => this.setState({email:text})}/>
+        </View>
+        <View style={styles.inputView} >
+        <TextInput  
+            style={styles.inputText}
             placeholder="Email..." 
             placeholderTextColor="#456268"
             onChangeText={text => this.setState({email:text})}/>
