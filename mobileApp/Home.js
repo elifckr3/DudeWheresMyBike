@@ -1,6 +1,16 @@
 import React from 'react';  
 import { StyleSheet, Text, View, TouchableOpacity, Switch} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItemList,
+  DrawerItem,
+} from '@react-navigation/drawer';
+import { NavigationContainer } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/Ionicons';
+
+Icon.loadFont();
 
 export default class HomeScreen extends React.Component {
   constructor(props) {
@@ -37,6 +47,11 @@ export default class HomeScreen extends React.Component {
           }}
             showsUserLocation={true}
           >
+             <TouchableOpacity
+                style={styles.menu}
+              >
+                <Icon name={"menu"}  size={30} color="#456268" />
+              </TouchableOpacity>
           
             <Marker
             coordinate={{latitude: this.state.latitude, longitude: this.state.longitude}}
@@ -49,7 +64,12 @@ export default class HomeScreen extends React.Component {
               this.state.showStatus ? 
               <View style={styles.bottomView}>
                 <TouchableOpacity style={styles.cancel} onPress={() => this.changeState()}>
-                  <Text style={styles.x}> X </Text>
+                <Icon
+                  name="close"
+                  color="#456268"
+                  size={30}
+                  
+                />
                 </TouchableOpacity>
                 <Text style={styles.statusHeading}> Your Bike</Text>
                 <Text style={styles.statusSubHeading}> Bike Status</Text>
@@ -92,17 +112,13 @@ const styles = StyleSheet.create({
   cancel: {
     height: 30,
     width: 30,
-    marginTop: 5,
+    marginTop: 8,
     right: 8,
     alignItems:"center",
     justifyContent:"center",
     alignSelf: 'flex-end',
     position: 'absolute',
     backgroundColor: '#fcf8ec',
-  },
-  x: {
-    fontSize: 20,
-    color: '#456268',
   },
   statusHeading:{
     fontWeight:"bold",
@@ -122,5 +138,16 @@ const styles = StyleSheet.create({
   switch:{
     flex: 1,
     alignItems: "center",
+  },
+  menu:{
+    alignItems:'center',
+    justifyContent:'center',
+    width:40,
+    height:40,
+    backgroundColor:'#fcf8ec',
+    borderRadius: 10,
+    marginTop: 40,
+    marginLeft: 15,
+    textAlign: 'center',
   }
 });
