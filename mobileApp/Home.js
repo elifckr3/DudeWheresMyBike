@@ -1,14 +1,8 @@
 import React from 'react';  
 import { StyleSheet, Text, View, TouchableOpacity, Switch} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
-import {
-  createDrawerNavigator,
-  DrawerContentScrollView,
-  DrawerItemList,
-  DrawerItem,
-} from '@react-navigation/drawer';
-import { NavigationContainer } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons';
+
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 Icon.loadFont();
 
@@ -49,6 +43,7 @@ export default class HomeScreen extends React.Component {
           >
              <TouchableOpacity
                 style={styles.menu}
+                onPress={() => this.props.navigation.openDrawer()}
               >
                 <Icon name={"menu"}  size={30} color="#456268" />
               </TouchableOpacity>
@@ -59,6 +54,7 @@ export default class HomeScreen extends React.Component {
             // description="Your bike is located here" 
             onPress={(e) => {e.stopPropagation(); this.changeState()}
           }>
+            <Icon name={"pedal-bike"}  size={30} color="#456268" />
             </Marker>
             {
               this.state.showStatus ? 
