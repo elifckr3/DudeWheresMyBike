@@ -14,9 +14,17 @@
    <br/>
    Map Home Screen
    <br/>
-   <img src="screenshots/map.png" alt="login" width="200"/>
+   <img src="screenshots/home.png" alt="login" width="200"/>
    <br/>
-   Bike Status (Get here by pressing on pin)
+   Bike Status (Get here by pressing on bike)
    <br/>
    <img src="screenshots/status.png" alt="login" width="200"/>
+   <br/>
+   Menu
+   <br/>
+   <img src="screenshots/menu.png" alt="login" width="200"/>
+   <br/>
+   Calibration
+   <br/>
+   <img src="screenshots/calibrate.png" alt="login" width="200"/>
    <br/>
