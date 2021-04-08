@@ -14,17 +14,17 @@
    <br/>
    Map Home Screen
    <br/>
-   <img src="screenshots/home.png" alt="login" width="200"/>
+   <img src="screenshots/homepage.png" alt="home" width="200"/>
    <br/>
    Bike Status (Get here by pressing on bike)
    <br/>
-   <img src="screenshots/status.png" alt="login" width="200"/>
+   <img src="screenshots/status.png" alt="status" width="200"/>
    <br/>
    Menu
    <br/>
-   <img src="screenshots/menu.png" alt="login" width="200"/>
+   <img src="screenshots/menu.png" alt="menu" width="200"/>
    <br/>
    Calibration
    <br/>
-   <img src="screenshots/calibrate.png" alt="login" width="200"/>
+   <img src="screenshots/calibrate.png" alt="calibration" width="200"/>
    <br/>
