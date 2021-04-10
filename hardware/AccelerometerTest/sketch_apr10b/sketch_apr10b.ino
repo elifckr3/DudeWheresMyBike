@@ -35,8 +35,6 @@ Wire.write(Data);
 Wire.endTransmission();
 }
  
-// Initial time
-long int ti;
 volatile bool intFlag=false;
  
 // Initializations
@@ -51,14 +49,7 @@ I2CwriteByte(MPU9250_ADDRESS,29,0x06);
 
 // Configure accelerometers range
 I2CwriteByte(MPU9250_ADDRESS,28,ACC_FULL_SCALE_16_G);
- 
-pinMode(13, OUTPUT);
-Timer1.initialize(10000); // initialize timer1, and set a 1/2 second period
-Timer1.attachInterrupt(callback); // attaches callback() as a timer overflow interrupt
- 
- 
-// Store initial time
-ti=millis();
+
 }
  
 // Counter
@@ -66,12 +57,6 @@ long int cpt=0;
 int16_t pax;
 int16_t pay;
 int16_t paz;
- 
-void callback()
-{ 
-intFlag=true;
-digitalWrite(13, digitalRead(13) ^ 1);
-}
  
 // Main loop, read and display data
 void loop()
