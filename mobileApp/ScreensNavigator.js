@@ -27,9 +27,9 @@ const NavStack = () => (
 function MyDrawer() {
   return (
     <Drawer.Navigator>
+      <Drawer.Screen name="Logout" component={LoginScreen} />
       <Drawer.Screen name="Home" component={HomeScreen} />
       <Drawer.Screen name="Calibrate" component={CalibrateScreen} />
-      <Drawer.Screen name="Logout" component={LoginScreen} />
       <Drawer.Screen name="Close Menu" component={NavStack} />
     </Drawer.Navigator>
   );
