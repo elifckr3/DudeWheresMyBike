@@ -1,21 +1,136 @@
 import React from 'react';  
 import { StyleSheet, Text, View, TouchableOpacity, Switch} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
+import init from 'react_native_mqtt';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 Icon.loadFont();
 
+init({
+  size: 10000,
+  storageBackend: AsyncStorage,
+  defaultExpires: 1000 * 3600 * 24,
+  enableCache: true,
+  reconnect: true,
+  sync : {
+  }
+});
+
 export default class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
+    this.onMessageArrived = this.onMessageArrived.bind(this);
+    this.onConnectionLost = this.onConnectionLost.bind(this);
+
+    const client = new Paho.MQTT.Client('ws://test.mosquitto.org:8080/mqtt', 'maker');
+    client.onMessageArrived = this.onMessageArrived;
+    client.onConnectionLost = this.onConnectionLost;
+    client.connect({ 
+      onSuccess: this.onConnect,
+      useSSL: false ,
+      // userName: 'yourUser',
+      // password: 'yourPass',
+      onFailure: (e) => {console.log("here is the error" , e); }
+
+    });
+
     this.state = { 
       showStatus: false,
       isEnabled: false,
       address: null,
-      latitude: 37.78825,
-      longitude: -122.4324,
+      latitude: 34.0191459656,
+      longitude: -118.2909164429,
+      forceRefresh: 0,
     };
+
+    this.mqtt_state = {
+      message: [''],
+      client,
+      messageToSend:'',
+      isConnected: false,
+    };
+  }
+
+  hasJsonStructure(str) {
+    if (typeof str !== 'string') return false;
+    try {
+        const result = JSON.parse(str);
+        const type = Object.prototype.toString.call(result);
+        return type === '[object Object]' 
+            || type === '[object Array]';
+    } catch (err) {
+        return false;
+    }
+}
+
+  toggleForceRefresh(){
+    if(this.state.forceRefresh == 0){
+      this.state.forceRefresh = 1;
+    }
+    else{
+      this.state.forceRefresh = 0;
+    }
+  }
+  onMessageArrived(entry) {
+    console.log("onMessageArrived:"+entry.payloadString);
+    if(this.hasJsonStructure(entry.payloadString)){
+      json = JSON.parse(entry.payloadString);
+      if(json.latitude){
+        console.log("changed latitude to: " + json.latitude);
+        this.state.latitude = parseFloat(json.latitude);
+      }
+      if(json.longitude){
+        console.log("changed longitutde to: " + json.longitude);
+        this.state.longitude = parseFloat(json.longitude);
+      }
+      
+      this.toggleForceRefresh();
+
+    }
+    else{
+      console.log("not a json");
+    }
+    
+    // this.setState({message: [...this.mqtt_state.message, entry.payloadString]});
+
+  }
+
+
+  onConnect = () => {
+    const { client } = this.mqtt_state;
+    console.log("Connected!!!!");
+    client.subscribe('DudeWheresMyBike');
+    this.setState({isConnected: true, error: ''})
+  };
+
+
+  sendMessage(){
+    message = new Paho.MQTT.Message(this.state.messageToSend);
+    message.destinationName = "DudeWheresMyBike";
+
+    if(this.state.isConnected){
+      this.state.client.send(message);    
+    }else{
+      this.connect(this.state.client)
+        .then(() => {
+          this.state.client.send(message);
+          this.setState({error: '', isConnected: true});
+        })
+        .catch((error)=> {
+          console.log(error);
+          this.setState({error: error});
+        });
+  }
+  }
+
+
+  onConnectionLost(responseObject) {
+    if (responseObject.errorCode !== 0) {
+      console.log("onConnectionLost:"+responseObject.errorMessage);
+      this.setState({error: 'Lost Connection', isConnected: false});
+    }
   }
 
   changeState(){
@@ -32,6 +147,7 @@ export default class HomeScreen extends React.Component {
   render(){
     return (
         <MapView
+         key={this.state.forceRefresh}
           style={{flex: 1}}
           initialRegion={{
             latitude: this.state.latitude,
