@@ -1,11 +1,11 @@
-#include <Wire.h>
-#include <SPI.h>
+// #include <Wire.h>
+// #include <SPI.h>
 //#include <Adafruit_LIS3DH.h>
 //#include <Adafruit_Sensor.h>        
 
 // GPS MODULE CRAP
 #include "TinyGPS++.h"
-#include "SoftwareSerial.h"
+// #include "SoftwareSerial.h"
 
 // ACCELEROMETER CRAP
 #include <TimerOne.h>
@@ -89,8 +89,8 @@ TinyGPSPlus gps;
 
 bool gps_feed_check()
 {
-  while (serial_connection.available()) {
-    gps.encode(serial_connection.read());
+  while (Serial1.available()) {
+    gps.encode(Serial1.read());
   }
 //  if (Serial1.available() > 0) {
 //    // read the incoming byte:
@@ -99,51 +99,51 @@ bool gps_feed_check()
 
 
 
-//  if (gps.location.isUpdated() && gps.location.isValid()) {
-//    latitude = gps.location.lat();
-//    longitude = gps.location.lng();
-////    Serial.println(latitude);
-////    Serial.println(longitude);
-//
-//    // half of the time,
-//    if (counter % 2 == 1) {
-//      // just set average values to be the current reading
-//      avglat = latitude;
-//      avglong = longitude;
-//      counter ++;
-//    }
-//    // the other half of the time
-//    else {
-//      // calculate average lat and long from last two values
-//      avglat += latitude;
-//      avglat /= 2;
-//      avglong += longitude;
-//      avglong /= 2;
-//      counter ++;
-//      if (setValues){
-//        GLOBAL_LAT = avglat;
-//        GLOBAL_LON = avglong;
-//        return true;
+ if (gps.location.isUpdated() && gps.location.isValid()) {
+   latitude = gps.location.lat();
+   longitude = gps.location.lng();
+//    Serial.println(latitude);
+//    Serial.println(longitude);
+
+   // half of the time,
+   if (counter % 2 == 1) {
+     // just set average values to be the current reading
+     avglat = latitude;
+     avglong = longitude;
+     counter ++;
+   }
+   // the other half of the time
+   else {
+     // calculate average lat and long from last two values
+     avglat += latitude;
+     avglat /= 2;
+     avglong += longitude;
+     avglong /= 2;
+     counter ++;
+     if (setValues){
+       GLOBAL_LAT = avglat;
+       GLOBAL_LON = avglong;
+       return true;
+     }
+//      // if this is the first time calculating avg lat and long
+//      // every 5 goes, reset first values
+//      if ((counter + 3) % 5 == 0) {
+//        firstlat = avglat;
+//        firstlong = avglong;
 //      }
-////      // if this is the first time calculating avg lat and long
-////      // every 5 goes, reset first values
-////      if ((counter + 3) % 5 == 0) {
-////        firstlat = avglat;
-////        firstlong = avglong;
-////      }
-//      // if not the first time calculating averages
-//      //else {
-//        // if the current values are more than 0.00001 away from first
-//        if (abs(avglat - GLOBAL_LAT) > 0.00002 || abs(avglong - GLOBAL_LON) > 0.00002) {
-////          gpsflag = 1;
-////          delay(2000);
-////          Serial.println("Device moved");
-//            return true;
-//        }
-//      //}
-//    }
-//
-//  }
+     // if not the first time calculating averages
+     //else {
+       // if the current values are more than 0.00001 away from first
+       if (abs(avglat - GLOBAL_LAT) > 0.00002 || abs(avglong - GLOBAL_LON) > 0.00002) {
+//          gpsflag = 1;
+//          delay(2000);
+//          Serial.println("Device moved");
+           return true;
+       }
+     //}
+   }
+
+ }
 
 
   if (gps.location.isUpdated() && gps.location.isValid()){
@@ -273,6 +273,7 @@ bool check_ultra(){
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
+  Serial1.begin(9600);
   serial_connection.begin(9600);
 //  pinMode(buzzer,OUTPUT);
 
