@@ -1,13 +1,14 @@
 #include "TinyGPS++.h"
 #include "SoftwareSerial.h"
 
-  int counter = 1;
-  double firstlat;
-  double firstlong;
-  double latitude,GLOBAL_LAT;
-  double longitude,GLOBAL_LON;
-  double avglat;
-  double avglong;
+  int counter = 0;
+  float firstlat;
+  float firstlong;
+  float latitude;
+  float longitude;
+  float avglat;
+  float avglong;
+  int filterNum = 4;
 
 //SoftwareSerial serial_connection(10, 11); // arduino uno: RX = pin 11, TX = pin 10
 SoftwareSerial serial_connection(1, 0); // arduino uno: RX = pin 11, TX = pin 10
@@ -27,8 +28,13 @@ if (gps.location.isUpdated() && gps.location.isValid()){
     latitude = gps.location.lat();
     longitude = gps.location.lng();
 
-    // half of the time,
-    if (counter % 2 == 1){
+    if (counter == 0){
+      firstlat = latitude;
+      firstlong = longitude;
+    }
+
+    // 
+    if (counter % filterNum == 0){
       // just set average values to be the current reading
       avglat = latitude;
       avglong = longitude;
@@ -36,23 +42,31 @@ if (gps.location.isUpdated() && gps.location.isValid()){
     // the other half of the time
     else{
       // calculate average lat and long from last two values
+      avglat *= (counter%filterNum-1);
       avglat += latitude;
-      avglat /= 2;
+      avglat /= counter%filterNum;
+      avglong *= (counter%filterNum-1);
       avglong += longitude;
-      avglong /= 2;
+      avglong /= counter%filterNum;
       // if this is the first time calculating avg lat and long
-      // every 5 goes, reset first values
-      if ((counter+3) % 5 == 0){
-        firstlat = avglat;
-        firstlong = avglong;
-      }
+
       // if not the first time calculating averages
-      else{
         // if the current values are more than 0.00001 away from first
-        if (abs(avglat - firstlat) > 0.00002 || abs(avglong-firstlong) > 0.00002){
+        Serial.print("First lat / long ");
+        Serial.print(firstlat, 10);
+        Serial.print(" ");
+        Serial.print(firstlong, 10);
+        Serial.print("\t");
+        Serial.print("Average lat / long ");
+        Serial.print(avglat, 10);
+        Serial.print(" ");
+        Serial.println(avglong, 10);
+        delay(200);
+        if (abs(avglat - firstlat) > 0.00001 || abs(avglong-firstlong) > 0.00001){
+          firstlat = avglat;
+          firstlong = avglong;
           Serial.println("Device moved");
-        }
-      }
+          }
     }
       
 
