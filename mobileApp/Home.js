@@ -43,6 +43,12 @@ export default class HomeScreen extends React.Component {
       latitude: 34.0191459656,
       longitude: -118.2909164429,
       forceRefresh: 0,
+      mapRegion: {
+        latitude: 34.0191459656,
+        longitude: -118.2909164429,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      }
     };
 
     this.mqtt_state = {
@@ -51,6 +57,7 @@ export default class HomeScreen extends React.Component {
       messageToSend:'',
       isConnected: false,
     };
+
   }
 
   hasJsonStructure(str) {
@@ -66,11 +73,11 @@ export default class HomeScreen extends React.Component {
 }
 
   toggleForceRefresh(){
-    if(this.state.forceRefresh == 0){
-      this.state.forceRefresh = 1;
+    if(this.state.forceRefresh == false){
+      this.setState({forceRefresh: true, error: ''})
     }
     else{
-      this.state.forceRefresh = 0;
+      this.setState({forceRefresh: false, error: ''})
     }
   }
   onMessageArrived(entry) {
@@ -78,12 +85,14 @@ export default class HomeScreen extends React.Component {
     if(this.hasJsonStructure(entry.payloadString)){
       json = JSON.parse(entry.payloadString);
       if(json.latitude){
-        console.log("changed latitude to: " + json.latitude);
         this.state.latitude = parseFloat(json.latitude);
+        this.setState({mapRegion: {latitude: parseFloat(json.latitude), longitude: this.state.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421}});
+        console.log("changed latitude to: " + this.state.latitude);
       }
       if(json.longitude){
-        console.log("changed longitutde to: " + json.longitude);
         this.state.longitude = parseFloat(json.longitude);
+        this.setState({mapRegion: {longitude: parseFloat(json.longitude), latitude: this.state.latitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421}});
+        console.log("changed longitude to: " + this.state.longitude);
       }
       
       this.toggleForceRefresh();
@@ -149,13 +158,9 @@ export default class HomeScreen extends React.Component {
         <MapView
          key={this.state.forceRefresh}
           style={{flex: 1}}
-          initialRegion={{
-            latitude: this.state.latitude,
-            longitude: this.state.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-            showsUserLocation={true}
+          region={this.state.mapRegion}
+          // onRegionChange={this.onRegionChange}
+          showsUserLocation={true}
           >
              <TouchableOpacity
                 style={styles.menu}
