@@ -3,7 +3,7 @@
 #include <Adafruit_LIS3DH.h>
 #include <Adafruit_Sensor.h>        
 #include "TinyGPS++.h"
-//#include "SoftwareSerial.h"
+#include "SoftwareSerial.h"
 
 int start =1;
 int bs = 0; //bike stolen flag
@@ -21,12 +21,12 @@ double firstlat;
 double firstlong;
 double latitude, GLOBAL_LAT;
 double longitude, GLOBAL_LON;
-double avglat;
+double avglat;  
 double avglong;
 
 const int buzzer = 7;
 //Doesnt work arduino MKR 1010 also will not work with the boron since it does not support the library
-//SoftwareSerial serial_connection(10, 11); // RX = pin 11, TX = pin 10
+//SoftwareSerial serial_connection(17, 16); // RX = pin 11, TX = pin 10
 TinyGPSPlus gps;
 
 

@@ -9,12 +9,12 @@
   double avglat;
   double avglong;
 
-SoftwareSerial serial_connection(10, 11); // RX = pin 11, TX = pin 10
+//SoftwareSerial serial_connection(10, 11); // arduino uno: RX = pin 11, TX = pin 10
+SoftwareSerial serial_connection(1, 0); // arduino uno: RX = pin 11, TX = pin 10
+//SoftwareSerial serial_connection(27, 25); // esp32 devkit board serial2: RX = pin 25, TX = pin 27
+//SoftwareSerial serial_connection(41, 40); // esp32 devkit board serial0: RX = pin 40, TX = pin 41
+
 TinyGPSPlus gps;
-
-
-
-
 
 void gps_feed_check()
 {
@@ -63,7 +63,7 @@ if (gps.location.isUpdated() && gps.location.isValid()){
 
 
 GLOBAL_LAT = avglat;
-GLOBAL_LON = avglon;
+GLOBAL_LON = avglong;
 
 }
 
