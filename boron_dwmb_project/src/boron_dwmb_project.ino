@@ -102,7 +102,8 @@ bool gps_feed_check()
 //  }
 
 
-
+  Serial.println("Entered gps_feed_check()");
+  //maybe publish test data?
  if (gps.location.isUpdated() && gps.location.isValid()) {
    latitude = gps.location.lat();
    longitude = gps.location.lng();
