@@ -8,7 +8,7 @@
 // #include "SoftwareSerial.h"
 
 // ACCELEROMETER CRAP
-#include <TimerOne.h>
+// #include <TimerOne.h>
  
 #define MPU9250_ADDRESS 0x68
  
@@ -75,11 +75,14 @@ int ack = 0;
   float avglat;
   float avglong;
   int filterNum = 4;
+  float GLOBAL_LAT;
+  float GLOBAL_LON;
 
 const int buzzer = 7;
 //Doesnt work arduino MKR 1010 also will not work with the boron since it does not support the library
 //will use Serial1 WITH the boron
-SoftwareSerial serial_connection(10, 11); // RX = pin 11, TX = pin 10
+// SoftwareSerial serial_connection(10, 11); // RX = pin 11, TX = pin 10
+// Serial1 
 TinyGPSPlus gps;
 
 
@@ -103,6 +106,10 @@ bool gps_feed_check()
  if (gps.location.isUpdated() && gps.location.isValid()) {
    latitude = gps.location.lat();
    longitude = gps.location.lng();
+   Serial.print("Latitude: ");
+   Serial.print(latitude);
+   Serial.print(", Longitude: ");
+   Serial.println(longitude);
    //publish latitude and longitude
   Particle.publish("update", String::format("{\"latitude\":%d,\"longitude\":%d}", latitude, longitude), PRIVATE);
 
@@ -124,11 +131,11 @@ bool gps_feed_check()
      avglong += longitude;
      avglong /= 2;
      counter ++;
-     if (setValues){
-       GLOBAL_LAT = avglat;
-       GLOBAL_LON = avglong;
-       return true;
-     }
+    //  if (setValues){
+    GLOBAL_LAT = avglat;
+    GLOBAL_LON = avglong;
+    return true;
+    //  }
 //      // if this is the first time calculating avg lat and long
 //      // every 5 goes, reset first values
 //      if ((counter + 3) % 5 == 0) {
@@ -260,7 +267,7 @@ bool check_ultra(){
   delayMicroseconds(20);
 
   digitalWrite(TRIG, LOW);
-  int distance = pulseIn(ECHO, HIGH, 26000);
+  int distance = pulseIn(ECHO, HIGH);   //26000?
 
   distance = distance/58;
 
@@ -279,7 +286,7 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
   Serial1.begin(9600);
-  serial_connection.begin(9600);
+  // serial_connection.begin(9600);
 //  pinMode(buzzer,OUTPUT);
 
   // ACCELEROMETER SETUP
@@ -308,7 +315,7 @@ void callback(const char* event, const char* data) {
 
     // modulate state machine from callback
     Serial.print("Message arrived [");
-    Serial.print(topic);
+    Serial.print("hook-response/update");
     Serial.print("] ");
     Serial.println("payload obtained from server:");
 
