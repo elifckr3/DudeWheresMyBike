@@ -7,7 +7,7 @@ export default class CalibrateScreen extends React.Component {
     this.onMessageArrived = this.onMessageArrived.bind(this);
     this.onConnectionLost = this.onConnectionLost.bind(this);
 
-    const client = new Paho.MQTT.Client('ws://test.mosquitto.org:8080/mqtt', 'maker');
+    const client = new Paho.MQTT.Client('broker.emqx.io', 'maker');
     client.onMessageArrived = this.onMessageArrived;
     client.onConnectionLost = this.onConnectionLost;
     client.connect({ 
