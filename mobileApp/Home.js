@@ -1,5 +1,5 @@
 import React from 'react';  
-import { StyleSheet, Text, View, TouchableOpacity, Switch} from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Switch, Alert} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
 import init from 'react_native_mqtt';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -40,12 +40,12 @@ export default class HomeScreen extends React.Component {
       showStatus: false,
       isEnabled: false,
       address: null,
-      latitude: 34.0191459656,
-      longitude: -118.2909164429,
+      latitude: 34.026213,
+      longitude: -118.28773159999999,
       forceRefresh: 0,
       mapRegion: {
-        latitude: 34.0191459656,
-        longitude: -118.2909164429,
+        latitude: 34.026213,
+        longitude: -118.28773159999999,
         latitudeDelta: 0.0122,
         longitudeDelta: 0.0021,
       },
@@ -100,7 +100,19 @@ export default class HomeScreen extends React.Component {
         this.setState({mapRegion: {longitude: parseFloat(json.longitude), latitude: this.state.latitude, latitudeDelta: 0.0122, longitudeDelta: 0.0021}});
         console.log("changed longitude to: " + this.state.longitude);
       }
-      
+
+      Alert.alert(
+        "Bike Moved",
+        // "My Alert Msg",
+        [
+          {
+            text: "OK",
+            // onPress: () => console.log("Cancel Pressed"),
+            // style: "cancel"
+          },
+        ]
+      );
+
       this.toggleForceRefresh();
 
     }
