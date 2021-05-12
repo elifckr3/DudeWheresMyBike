@@ -2,9 +2,69 @@ import React from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 
 export default class CalibrateScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.onMessageArrived = this.onMessageArrived.bind(this);
+    this.onConnectionLost = this.onConnectionLost.bind(this);
+
+    const client = new Paho.MQTT.Client('broker.emqx.io', 'maker');
+    client.onMessageArrived = this.onMessageArrived;
+    client.onConnectionLost = this.onConnectionLost;
+    client.connect({ 
+      onSuccess: this.onConnect,
+      useSSL: false ,
+      // userName: 'yourUser',
+      // password: 'yourPass',
+      onFailure: (e) => {console.log("here is the error" , e); }
+
+    });
+
+  }
+
+  onConnect = () => {
+    const { client } = this.state.mqtt_state;
+    console.log("Connected!!!!");
+    client.subscribe('DudeWheresMyBike');
+    this.state.mqtt_state.isConnected = true;
+  };
+
+  onMessageArrived(entry) {
+    console.log("onMessageArrived:"+entry.payloadString);
+    
+    // this.setState({message: [...this.mqtt_state.message, entry.payloadString]});
+
+  }
+
+  sendMessage(){
+    message = new Paho.MQTT.Message(this.state.mqtt_state.messageToSend);
+    message.destinationName = "DudeWheresMyBike";
+
+    if(this.state.mqtt_state.isConnected){
+      this.state.mqtt_state.client.send(message);    
+    }else{
+      this.connect(this.state.mqtt_state.client)
+        .then(() => {
+          this.state.mqtt_state.client.send(message);
+          // this.setState({error: '', isConnected: true});
+        })
+        .catch((error)=> {
+          console.log(error);
+          // this.setState({error: error});
+        });
+  }
+  }
+
+
+  onConnectionLost(responseObject) {
+    if (responseObject.errorCode !== 0) {
+      console.log("onConnectionLost:"+responseObject.errorMessage);
+      this.setState({error: 'Lost Connection', isConnected: false});
+    }
+  }
+
   state={
-    ultrasonic1:"",
-    ultrasonic2:"",
+    ultrasonic:"",
+    accel:"",
   }
   render(){
     return (
@@ -20,9 +80,9 @@ export default class CalibrateScreen extends React.Component {
         <View style={styles.inputView} >
         <TextInput  
             style={styles.inputText}
-            placeholder="Ultrasonic2 Distance..." 
+            placeholder="Accelerometer Distance..." 
             placeholderTextColor="#456268"
-            onChangeText={text => this.setState({ultrasonic2:text})}/>
+            onChangeText={text => this.setState({accel:text})}/>
         </View>
         <TouchableOpacity style={styles.loginBtn} onPress={() => this.props.navigation.navigate('Home')}>
             <Text style={styles.loginText}>Calibrate!</Text>

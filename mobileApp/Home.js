@@ -1,5 +1,5 @@
 import React from 'react';  
-import { StyleSheet, Text, View, TouchableOpacity, Switch} from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Switch, Alert} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
 import init from 'react_native_mqtt';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -24,7 +24,7 @@ export default class HomeScreen extends React.Component {
     this.onMessageArrived = this.onMessageArrived.bind(this);
     this.onConnectionLost = this.onConnectionLost.bind(this);
 
-    const client = new Paho.MQTT.Client('ws://test.mosquitto.org:8080/mqtt', 'maker');
+    const client = new Paho.MQTT.Client('wss://broker.emqx.io:8084/mqtt', 'maker');
     client.onMessageArrived = this.onMessageArrived;
     client.onConnectionLost = this.onConnectionLost;
     client.connect({ 
@@ -40,23 +40,29 @@ export default class HomeScreen extends React.Component {
       showStatus: false,
       isEnabled: false,
       address: null,
-      latitude: 34.0191459656,
-      longitude: -118.2909164429,
+      latitude: 34.026213,
+      longitude: -118.28773159999999,
       forceRefresh: 0,
       mapRegion: {
-        latitude: 34.0191459656,
-        longitude: -118.2909164429,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
+        latitude: 34.026213,
+        longitude: -118.28773159999999,
+        latitudeDelta: 0.0122,
+        longitudeDelta: 0.0021,
+      },
+      mqtt_state: {
+        message: [''],
+        client,
+        messageToSend:'',
+        isConnected: false,
       }
     };
 
-    this.mqtt_state = {
-      message: [''],
-      client,
-      messageToSend:'',
-      isConnected: false,
-    };
+    // this.mqtt_state = {
+    //   message: [''],
+    //   client,
+    //   messageToSend:'',
+    //   isConnected: false,
+    // };
 
   }
 
@@ -86,15 +92,27 @@ export default class HomeScreen extends React.Component {
       json = JSON.parse(entry.payloadString);
       if(json.latitude){
         this.state.latitude = parseFloat(json.latitude);
-        this.setState({mapRegion: {latitude: parseFloat(json.latitude), longitude: this.state.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421}});
+        this.setState({mapRegion: {latitude: parseFloat(json.latitude), longitude: this.state.longitude, latitudeDelta: 0.0122, longitudeDelta: 0.0021}});
         console.log("changed latitude to: " + this.state.latitude);
       }
       if(json.longitude){
         this.state.longitude = parseFloat(json.longitude);
-        this.setState({mapRegion: {longitude: parseFloat(json.longitude), latitude: this.state.latitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421}});
+        this.setState({mapRegion: {longitude: parseFloat(json.longitude), latitude: this.state.latitude, latitudeDelta: 0.0122, longitudeDelta: 0.0021}});
         console.log("changed longitude to: " + this.state.longitude);
       }
-      
+
+      Alert.alert(
+        "Bike Moved",
+        // "My Alert Msg",
+        [
+          {
+            text: "OK",
+            // onPress: () => console.log("Cancel Pressed"),
+            // style: "cancel"
+          },
+        ]
+      );
+
       this.toggleForceRefresh();
 
     }
@@ -108,28 +126,28 @@ export default class HomeScreen extends React.Component {
 
 
   onConnect = () => {
-    const { client } = this.mqtt_state;
+    const { client } = this.state.mqtt_state;
     console.log("Connected!!!!");
     client.subscribe('DudeWheresMyBike');
-    this.setState({isConnected: true, error: ''})
+    this.state.mqtt_state.isConnected = true;
   };
 
 
   sendMessage(){
-    message = new Paho.MQTT.Message(this.state.messageToSend);
+    message = new Paho.MQTT.Message(this.state.mqtt_state.messageToSend);
     message.destinationName = "DudeWheresMyBike";
 
-    if(this.state.isConnected){
-      this.state.client.send(message);    
+    if(this.state.mqtt_state.isConnected){
+      this.state.mqtt_state.client.send(message);    
     }else{
-      this.connect(this.state.client)
+      this.connect(this.state.mqtt_state.client)
         .then(() => {
-          this.state.client.send(message);
-          this.setState({error: '', isConnected: true});
+          this.state.mqtt_state.client.send(message);
+          // this.setState({error: '', isConnected: true});
         })
         .catch((error)=> {
           console.log(error);
-          this.setState({error: error});
+          // this.setState({error: error});
         });
   }
   }
@@ -151,6 +169,14 @@ export default class HomeScreen extends React.Component {
     this.setState({
       isEnabled: !this.state.isEnabled
     });
+    console.log(this.state.isEnabled);
+    if(this.state.isEnabled){
+      this.state.mqtt_state.messageToSend = "OFF";
+    }
+    else{
+      this.state.mqtt_state.messageToSend = "ON";
+    }
+    this.sendMessage();
   }
 
   render(){
